@@ -46,7 +46,9 @@ export function parseListState(params: URLSearchParams): JobListState {
 export function applyListState(base: URLSearchParams, state: JobListState): URLSearchParams {
   const next = new URLSearchParams(base);
   for (const key of MANAGED_KEYS) next.delete(key);
-  for (const status of state.statuses) next.append("status", status);
+  // Canonical order keeps one URL per view, however the boxes were ticked.
+  for (const status of JOB_STATUSES)
+    if (state.statuses.includes(status)) next.append("status", status);
   if (state.queue) next.set("queue", state.queue);
   if (state.q) next.set("q", state.q);
   if (state.sort !== DEFAULT_SORT) next.set("sort", state.sort);
