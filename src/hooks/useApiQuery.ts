@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError } from "../api/errors";
+import { getMockMode } from "../mocks/mode";
 
 const MAX_AUTO_RETRIES = 3;
 
@@ -41,7 +42,9 @@ export function useApiQuery<T>(
   const [result, setResult] = useState<Result<T> | null>(null);
   const fetcherRef = useRef(fetcher);
   const autoRetries = useRef(0);
-  const requestKey = `${key}#${reloadCount}`;
+  // Data fetched under one mock mode is not valid under another, so a mode change refetches.
+  const mode = getMockMode();
+  const requestKey = `${mode}:${key}#${reloadCount}`;
 
   useEffect(() => {
     fetcherRef.current = fetcher;

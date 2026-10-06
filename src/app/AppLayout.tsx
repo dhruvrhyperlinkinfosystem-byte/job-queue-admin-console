@@ -1,6 +1,7 @@
 import { LogOut } from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import { Button } from "../components/Button";
+import { MockModeBanner } from "../components/MockModeBanner";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { cn } from "../lib/cn";
 import { useAuthStore } from "../stores/authStore";
@@ -25,6 +26,7 @@ export function AppLayout() {
       >
         Skip to content
       </a>
+      <MockModeBanner />
       <header className="border-b border-slate-200 dark:border-slate-800">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2">
           <span className="font-semibold">Job Queue Admin</span>
