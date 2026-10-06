@@ -251,7 +251,11 @@ export function JobDetailPage() {
             <h2 id="payload-heading" className="text-lg font-semibold">
               Payload
             </h2>
-            <CopyButton text={payload} label="Copy payload" />
+            <CopyButton
+              text={payload}
+              label="Copy payload"
+              successMessage="Payload copied to clipboard."
+            />
           </div>
           <pre
             tabIndex={0}

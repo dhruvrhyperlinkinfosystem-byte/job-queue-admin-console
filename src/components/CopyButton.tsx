@@ -4,7 +4,18 @@ import { copyText } from "../lib/clipboard";
 import { useToastStore } from "../stores/toastStore";
 import { Button } from "./Button";
 
-export function CopyButton({ text, label }: { text: string; label: string }) {
+interface CopyButtonProps {
+  text: string;
+  label: string;
+  /** Shown in the toast after a successful copy. */
+  successMessage?: string;
+}
+
+export function CopyButton({
+  text,
+  label,
+  successMessage = "Copied to clipboard.",
+}: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -14,8 +25,13 @@ export function CopyButton({ text, label }: { text: string; label: string }) {
   }, [copied]);
 
   async function copy() {
-    if (await copyText(text)) setCopied(true);
-    else useToastStore.getState().push("error", "Could not copy to the clipboard.");
+    const toast = useToastStore.getState();
+    if (await copyText(text)) {
+      setCopied(true);
+      toast.push("success", successMessage);
+    } else {
+      toast.push("error", "Could not copy to the clipboard.");
+    }
   }
 
   return (
@@ -26,9 +42,6 @@ export function CopyButton({ text, label }: { text: string; label: string }) {
         <Copy className="size-4" aria-hidden="true" />
       )}
       {copied ? "Copied" : label}
-      <span role="status" className="sr-only">
-        {copied ? "Copied to clipboard" : ""}
-      </span>
     </Button>
   );
 }

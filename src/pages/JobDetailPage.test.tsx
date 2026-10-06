@@ -42,6 +42,7 @@ describe("job detail", () => {
     await user.click(screen.getByRole("button", { name: "Copy payload" }));
 
     expect(await screen.findByRole("button", { name: /copied/i })).toBeInTheDocument();
+    expect(screen.getByText("Payload copied to clipboard.")).toBeInTheDocument();
     await expect(navigator.clipboard.readText()).resolves.toBe(
       JSON.stringify(job.payload, null, 2),
     );
