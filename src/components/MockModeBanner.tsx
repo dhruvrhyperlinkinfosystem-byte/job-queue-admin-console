@@ -23,7 +23,7 @@ export function MockModeBanner() {
   params.set("mock", "normal");
 
   return (
-    <div className="border-b border-amber-300 bg-amber-100 text-amber-950 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100">
+    <div className="border-b border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">
       <p className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-1.5 text-sm">
         <FlaskConical className="size-4" aria-hidden="true" />
         <span>

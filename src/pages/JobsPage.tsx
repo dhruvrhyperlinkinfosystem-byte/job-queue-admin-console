@@ -6,7 +6,7 @@ import { MAX_BULK_REPLAY, type BulkReplayResponse } from "../api/types";
 import { Button } from "../components/Button";
 import { EmptyState } from "../components/EmptyState";
 import { ErrorState } from "../components/ErrorState";
-import { LoadingRegion, Skeleton } from "../components/Skeleton";
+import { LoadingRegion, TableSkeleton } from "../components/Skeleton";
 import { BulkReplayDialog } from "../features/jobs/BulkReplayDialog";
 import { JobsFilters } from "../features/jobs/JobsFilters";
 import { JobsTable } from "../features/jobs/JobsTable";
@@ -20,14 +20,10 @@ import { pluralize } from "../lib/format";
 import { useSelectionStore } from "../stores/selectionStore";
 import { useToastStore } from "../stores/toastStore";
 
-function TableSkeleton() {
+function JobsLoading() {
   return (
     <LoadingRegion label="Loading jobs">
-      <div className="flex flex-col gap-2">
-        {Array.from({ length: 8 }, (_, i) => (
-          <Skeleton key={i} className="h-10" />
-        ))}
-      </div>
+      <TableSkeleton />
     </LoadingRegion>
   );
 }
@@ -102,7 +98,7 @@ export function JobsPage() {
   if (error) {
     content = <ErrorState message={error.message} onRetry={reload} retryAt={retryAt} />;
   } else if (!data) {
-    content = <TableSkeleton />;
+    content = <JobsLoading />;
   } else if (data.total === 0) {
     content = filtersActive ? (
       <EmptyState

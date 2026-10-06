@@ -1,4 +1,4 @@
-import { KeyRound } from "lucide-react";
+import { Layers } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
 import { Button } from "../components/Button";
@@ -40,13 +40,15 @@ export function SignInPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="flex justify-end p-2">
+    <div className="flex min-h-screen flex-col bg-[radial-gradient(60rem_30rem_at_50%_-10%,theme(colors.indigo.100),transparent)] dark:bg-[radial-gradient(60rem_30rem_at_50%_-10%,theme(colors.indigo.950),transparent)]">
+      <div className="flex justify-end p-3">
         <ThemeToggle />
       </div>
-      <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 pb-16">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <KeyRound className="size-8 text-indigo-700 dark:text-indigo-300" aria-hidden="true" />
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 pb-20">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <span className="flex size-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-float">
+            <Layers className="size-6" aria-hidden="true" />
+          </span>
           <h1 className="text-2xl font-semibold">Job Queue Admin</h1>
           <p className="text-sm text-slate-600 dark:text-slate-300">
             Sign in with an API token to manage queues and jobs.
@@ -56,13 +58,13 @@ export function SignInPage() {
         {notice && (
           <p
             role="alert"
-            className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-100"
+            className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-100"
           >
             {notice}
           </p>
         )}
 
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} noValidate className="card flex flex-col gap-4 p-6">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="token" className="text-sm font-medium">
               Access token
@@ -77,10 +79,10 @@ export function SignInPage() {
               onChange={(event) => setValue(event.target.value)}
               aria-invalid={error ? true : undefined}
               aria-describedby={error ? "token-error token-hint" : "token-hint"}
-              className="min-h-10 rounded-md border border-slate-400 bg-white px-3 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-500 dark:bg-slate-900 dark:focus-visible:outline-indigo-300"
+              className="field w-full"
             />
             {error && (
-              <p id="token-error" className="text-sm text-red-700 dark:text-red-300">
+              <p id="token-error" className="text-sm font-medium text-red-700 dark:text-red-300">
                 {error}
               </p>
             )}
