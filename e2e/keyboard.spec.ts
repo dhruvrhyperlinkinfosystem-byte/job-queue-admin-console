@@ -87,3 +87,63 @@ test("the skip link jumps past the navigation", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(page.locator("#main")).toBeFocused();
 });
+
+test("a whole session works with the keyboard only: queues, filters, detail, retry, copy, sign out", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Queues" })).toBeVisible();
+
+  // Queues: follow a count link.
+  const failedLink = page.getByRole("link", { name: /failed jobs in email/ });
+  await failedLink.focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/queue=email&status=failed/);
+  await expect(page.getByText(/Showing 1/)).toBeVisible();
+
+  // Filters: toggle a status with Space, change the queue with the keyboard.
+  const pending = page.getByRole("checkbox", { name: "Pending", exact: true });
+  await pending.focus();
+  await page.keyboard.press("Space");
+  await expect(page).toHaveURL(/status=pending&status=failed/);
+  const queue = page.getByLabel("Queue");
+  await queue.focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(page).toHaveURL(/queue=exports/);
+  await page.getByRole("button", { name: "Clear filters" }).first().focus();
+  await page.keyboard.press("Enter");
+  await expect(page).not.toHaveURL(/queue=/);
+
+  // Search with the keyboard.
+  await page.getByRole("searchbox").focus();
+  await page.keyboard.type("job_01J");
+  await expect(page).toHaveURL(/q=job_01J/);
+  await page.getByRole("searchbox").fill("");
+  await expect(page).not.toHaveURL(/q=/);
+
+  // Open a failed job and retry it.
+  await page.goto("/jobs?status=failed");
+  const firstLink = page.getByRole("table").getByRole("link").first();
+  const id = (await firstLink.textContent()) ?? "";
+  await firstLink.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { level: 1, name: id })).toBeVisible();
+
+  // Copy payload.
+  await page.getByRole("button", { name: "Copy payload" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("button", { name: /copied/i })).toBeVisible();
+
+  // Retry.
+  await page.getByRole("button", { name: `Retry ${id}` }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByText("Pending", { exact: true })).toBeVisible();
+
+  // Back link, then sign out.
+  await page.getByRole("link", { name: /back to jobs/i }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/jobs\?status=failed/);
+  await page.getByRole("button", { name: "Sign out" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByLabel("Access token")).toBeVisible();
+});

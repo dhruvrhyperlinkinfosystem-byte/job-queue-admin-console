@@ -76,6 +76,12 @@ for (const theme of ["light", "dark"] as const satisfies Theme[]) {
         expect(await seriousViolations(page)).toEqual([]);
       });
 
+      test("mock mode banner", async ({ page }) => {
+        await page.goto("/jobs?mock=flaky");
+        await expect(page.getByText(/Mock mode/)).toBeVisible();
+        expect(await seriousViolations(page)).toEqual([]);
+      });
+
       test("job detail", async ({ page }) => {
         await page.goto("/jobs?status=dead");
         await page.getByRole("table").getByRole("link").first().click();
