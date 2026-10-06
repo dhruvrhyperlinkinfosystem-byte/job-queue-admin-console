@@ -16,14 +16,17 @@ const ICON_TONES: Record<ToastKind, string> = {
   info: "text-slate-700 dark:text-slate-300",
 };
 
-export function ToastRegion() {
+export function ToastRegion({ className }: { className?: string }) {
   const toasts = useToastStore((state) => state.toasts);
   const dismiss = useToastStore((state) => state.dismiss);
   return (
     <div
       role="region"
       aria-label="Notifications"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-center gap-2 p-4 sm:items-end"
+      className={cn(
+        "pointer-events-none flex w-full flex-col items-end gap-2 sm:w-auto sm:min-w-[22rem]",
+        className,
+      )}
     >
       {toasts.map((toast) => {
         const Icon = ICONS[toast.kind];

@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router";
 import { RequireAuth } from "./app/RequireAuth";
-import { ToastRegion } from "./components/ToastRegion";
 import { useTheme } from "./hooks/useTheme";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { SignInPage } from "./pages/SignInPage";
@@ -21,7 +20,6 @@ export default function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
-      <ToastRegion />
     </>
   );
 }
