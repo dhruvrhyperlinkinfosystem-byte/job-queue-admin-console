@@ -16,7 +16,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "e2e": "playwright test",
-    "lighthouse": "node scripts/lighthouse.mjs"
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "walkthrough": "node scripts/record-walkthrough.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
