@@ -158,3 +158,36 @@ describe("copy payload fallback", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(/could not copy/i);
   });
 });
+
+describe("job detail: last error and headings", () => {
+  it("says so when a job has no error, instead of omitting the section", async () => {
+    const job = seedWhere((j) => j.status === "succeeded")[0]!;
+    renderAt(`/jobs/${job.id}`);
+    const section = await screen.findByRole("region", { name: "Last error" });
+    expect(section).toHaveTextContent("No error recorded.");
+  });
+
+  it("shows the error text when there is one", async () => {
+    const job = failed();
+    renderAt(`/jobs/${job.id}`);
+    expect(await screen.findByRole("region", { name: "Last error" })).toHaveTextContent(
+      job.last_error!,
+    );
+  });
+
+  it("keeps a page heading while loading, on errors and for unknown ids", async () => {
+    renderAt("/jobs/job_unknown");
+    expect(screen.getByRole("heading", { level: 1, name: "Job details" })).toBeInTheDocument();
+    await screen.findByRole("heading", { name: "Job not found" });
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+
+  it("gives a waiting job a next-attempt time", async () => {
+    const job = seedWhere((j) => j.status === "pending" && j.attempts === 0)[0]!;
+    expect(job.next_attempt_at).not.toBeNull();
+    renderAt(`/jobs/${job.id}`);
+    await screen.findByRole("heading", { level: 1, name: job.id });
+    const next = screen.getByText("Next attempt").closest("div")!;
+    expect(next).not.toHaveTextContent("–");
+  });
+});

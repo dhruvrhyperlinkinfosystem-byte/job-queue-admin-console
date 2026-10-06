@@ -125,7 +125,10 @@ export function createSeedJobs(): Job[] {
           : null,
       next_attempt_at: hasPendingRetry
         ? new Date(SEED_BASE_TIME + minutes(int(rng, 1, 120))).toISOString()
-        : null,
+        : status === "pending"
+          ? // A waiting job is due soon. Derived from the index so the random sequence is unchanged.
+            new Date(SEED_BASE_TIME + minutes((i % 45) + 1)).toISOString()
+          : null,
       created_at: new Date(createdMs).toISOString(),
       updated_at: new Date(updatedMs).toISOString(),
     });

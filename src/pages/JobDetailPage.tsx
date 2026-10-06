@@ -3,6 +3,7 @@ import {
   CalendarClock,
   CalendarPlus,
   CircleAlert,
+  CircleCheck,
   History,
   Layers,
   RefreshCw,
@@ -88,6 +89,45 @@ function JobSummary({ job }: { job: Job }) {
         <Time iso={job.updated_at} />
       </Field>
     </dl>
+  );
+}
+
+function LastError({ message }: { message: string | null }) {
+  return (
+    <section
+      aria-labelledby="last-error-heading"
+      className={cn(
+        "flex gap-3 rounded-xl border p-4",
+        message
+          ? "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/40"
+          : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900",
+      )}
+    >
+      {message ? (
+        <CircleAlert
+          className="mt-0.5 size-5 shrink-0 text-red-700 dark:text-red-300"
+          aria-hidden="true"
+        />
+      ) : (
+        <CircleCheck
+          className="mt-0.5 size-5 shrink-0 text-slate-500 dark:text-slate-400"
+          aria-hidden="true"
+        />
+      )}
+      <div className="min-w-0">
+        <h2 id="last-error-heading" className="text-sm font-semibold">
+          Last error
+        </h2>
+        <p
+          className={cn(
+            "mt-1 break-words text-sm",
+            message ? "text-slate-800 dark:text-slate-200" : "text-slate-600 dark:text-slate-400",
+          )}
+        >
+          {message ?? "No error recorded."}
+        </p>
+      </div>
+    </section>
   );
 }
 
@@ -204,25 +244,7 @@ export function JobDetailPage() {
           <ActionButton job={data} busy={busyIds.has(data.id)} onRun={run} />
         </div>
         <JobSummary job={data} />
-        {data.last_error && (
-          <section
-            aria-labelledby="last-error-heading"
-            className="flex gap-3 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40"
-          >
-            <CircleAlert
-              className="mt-0.5 size-5 shrink-0 text-red-700 dark:text-red-300"
-              aria-hidden="true"
-            />
-            <div className="min-w-0">
-              <h2 id="last-error-heading" className="text-sm font-semibold">
-                Last error
-              </h2>
-              <p className="mt-1 break-words text-sm text-slate-800 dark:text-slate-200">
-                {data.last_error}
-              </p>
-            </div>
-          </section>
-        )}
+        <LastError message={data.last_error} />
         <AttemptsSection jobId={data.id} reloadKey={attemptsVersion} />
         <section aria-labelledby="payload-heading" className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
@@ -249,6 +271,8 @@ export function JobDetailPage() {
   return (
     <div className="flex flex-col gap-5">
       {back}
+      {/* The job's own heading only exists once it has loaded; keep one h1 on the page meanwhile. */}
+      {!job.data && <h1 className="sr-only">Job details</h1>}
       {content}
     </div>
   );

@@ -233,7 +233,7 @@ All checks pass on a fresh clone after `npm ci` (run on Node 22, see caveats bel
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `tsc -b`, no `any`, no unexplained `@ts-ignore` | pass                                                                                                   |
 | ESLint (`--max-warnings 0`), Prettier           | pass                                                                                                   |
-| Vitest                                          | 102 tests across 12 files                                                                              |
+| Vitest                                          | 106 tests across 12 files                                                                              |
 | Playwright                                      | 26 tests: replay flow, axe on every screen/state in both themes, keyboard-only flows                   |
 | axe (critical + serious)                        | 0 violations on sign-in, queues, list, detail, bulk dialog, empty, error, not-found, in light and dark |
 | Lighthouse accessibility                        | 100 on list and detail, light and dark, desktop and mobile                                             |
