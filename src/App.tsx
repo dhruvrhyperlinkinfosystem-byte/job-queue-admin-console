@@ -1,9 +1,23 @@
 import { Route, Routes } from "react-router";
+import { RequireAuth } from "./app/RequireAuth";
+import { ToastRegion } from "./components/ToastRegion";
+import { useTheme } from "./hooks/useTheme";
+import { NotFoundPage } from "./pages/NotFoundPage";
+import { SignInPage } from "./pages/SignInPage";
+import { QueuesPage } from "./pages/QueuesPage";
 
 export default function App() {
+  useTheme();
   return (
-    <Routes>
-      <Route path="/" element={<h1 className="p-6 text-xl font-semibold">Job Queue Admin</h1>} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/signin" element={<SignInPage />} />
+        <Route element={<RequireAuth />}>
+          <Route index element={<QueuesPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+      <ToastRegion />
+    </>
   );
 }
