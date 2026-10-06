@@ -75,7 +75,12 @@ function parseBulkIds(body: unknown): string[] | null {
   return ids.every((id): id is string => typeof id === "string") ? ids : null;
 }
 
+export const PING_PATH = `${API_BASE}/__mock/ping`;
+
 export const handlers = [
+  // Lets the app check that the mock service worker is still answering for this page.
+  http.get(PING_PATH, () => HttpResponse.json({ ok: true })),
+
   http.get(
     `${API_BASE}/queues`,
     route(() => HttpResponse.json<QueueListResponse>({ items: queueSummaries() })),

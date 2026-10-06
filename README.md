@@ -187,6 +187,12 @@ A 409 or 404 shows the server's message, then refreshes the affected view.
   defaults rather than erroring.
 - **Bulk replay**: partial success is shown per job inside the dialog; a request-level failure
   appears in the dialog with a retry.
+- **Idle mock backend**: browsers stop idle service workers (background tabs, sleep), after which
+  MSW no longer answers for the page and calls would fail with a 404 until a refresh. The client
+  recognises a 404 with no API error body as "never reached the backend", restarts the worker
+  and retries the request once; the worker is also re-checked when the tab regains focus or
+  visibility. Tested in unit tests and in Playwright by stopping the worker through the DevTools
+  protocol.
 - **Empty states**: no queues, no jobs at all, no matches for the filters (with "Clear filters"),
   and a page past the end (with a way back).
 
@@ -227,8 +233,8 @@ All checks pass on a fresh clone after `npm ci` (run on Node 22, see caveats bel
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `tsc -b`, no `any`, no unexplained `@ts-ignore` | pass                                                                                                   |
 | ESLint (`--max-warnings 0`), Prettier           | pass                                                                                                   |
-| Vitest                                          | 97 tests across 11 files                                                                               |
-| Playwright                                      | 24 tests: replay flow, axe on every screen/state in both themes, keyboard-only flows                   |
+| Vitest                                          | 102 tests across 12 files                                                                              |
+| Playwright                                      | 26 tests: replay flow, axe on every screen/state in both themes, keyboard-only flows                   |
 | axe (critical + serious)                        | 0 violations on sign-in, queues, list, detail, bulk dialog, empty, error, not-found, in light and dark |
 | Lighthouse accessibility                        | 100 on list and detail, light and dark, desktop and mobile                                             |
 

@@ -13,7 +13,7 @@ narrated walkthrough recording, the hours log and the live walkthrough.
   job detail (attempts, payload with copy), retry, replay and bulk replay with per-job results.
 - Loading, empty and error states; 429 waits for `Retry-After`; 401 returns to sign-in.
 - Dark mode, 375 px layout, keyboard and accessibility work.
-- 97 component tests, 24 Playwright tests (replay flow, axe, keyboard), Lighthouse 100.
+- 102 component tests, 26 Playwright tests (replay flow, axe, keyboard), Lighthouse 100.
 
 ## Decisions worth a look
 

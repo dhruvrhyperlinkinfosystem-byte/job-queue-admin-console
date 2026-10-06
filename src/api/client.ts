@@ -7,6 +7,11 @@ export interface ApiConfig {
   getToken: () => string | null;
   /** Called on every 401 before the error is thrown, so the app can sign out. */
   onUnauthorized: () => void;
+  /**
+   * Called when a response looks like it never reached the backend (a 404 with no API error
+   * body). Resolve true if something was repaired, and the request is retried once.
+   */
+  recover?: () => Promise<boolean>;
 }
 
 let config: ApiConfig = { getToken: () => null, onUnauthorized: () => {} };
@@ -80,16 +85,15 @@ async function toApiError(response: Response): Promise<ApiError> {
   });
 }
 
-export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function send(path: string, options: RequestOptions): Promise<Response> {
   const { method = "GET", query, body, signal } = options;
   const headers: Record<string, string> = { Accept: "application/json" };
   const token = config.getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
   if (body !== undefined) headers["Content-Type"] = "application/json";
 
-  let response: Response;
   try {
-    response = await fetch(buildUrl(path, query), {
+    return await fetch(buildUrl(path, query), {
       method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -103,11 +107,26 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
       message: "Could not reach the server. Check your connection and try again.",
     });
   }
+}
+
+/** A 404 without an ApiErrorBody did not come from the API: the request bypassed the backend. */
+function bypassedBackend(error: ApiError): boolean {
+  return error.status === 404 && error.code === "http_error";
+}
+
+export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  let response = await send(path, options);
 
   if (!response.ok) {
-    const apiError = await toApiError(response);
-    if (apiError.status === 401) config.onUnauthorized();
-    throw apiError;
+    let apiError = await toApiError(response);
+    if (bypassedBackend(apiError) && config.recover && (await config.recover())) {
+      response = await send(path, options);
+      if (!response.ok) apiError = await toApiError(response);
+    }
+    if (!response.ok) {
+      if (apiError.status === 401) config.onUnauthorized();
+      throw apiError;
+    }
   }
   return (await readJson(response)) as T;
 }
