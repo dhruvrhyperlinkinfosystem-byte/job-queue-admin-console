@@ -3,9 +3,11 @@ import { useState, type FormEvent } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router";
 import { Button } from "../components/Button";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { ToastRegion } from "../components/ToastRegion";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import { validateToken } from "../lib/validation";
 import { useAuthStore } from "../stores/authStore";
+import { useToastStore } from "../stores/toastStore";
 
 function redirectTarget(state: unknown): string {
   if (typeof state === "object" && state !== null && "from" in state) {
@@ -36,6 +38,7 @@ export function SignInPage() {
     setError(problem);
     if (problem) return;
     signIn(value.trim());
+    useToastStore.getState().push("success", "Signed in successfully.");
     void navigate(redirectTarget(location.state), { replace: true });
   }
 
@@ -43,6 +46,10 @@ export function SignInPage() {
     <div className="flex min-h-screen flex-col bg-[radial-gradient(60rem_30rem_at_50%_-10%,theme(colors.indigo.100),transparent)] dark:bg-[radial-gradient(60rem_30rem_at_50%_-10%,theme(colors.indigo.950),transparent)]">
       <div className="flex justify-end p-3">
         <ThemeToggle />
+      </div>
+      {/* Top-right, below the theme toggle. */}
+      <div className="pointer-events-none fixed right-0 top-16 z-50 flex w-full justify-end px-4 sm:w-auto">
+        <ToastRegion />
       </div>
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 pb-20">
         <div className="flex flex-col items-center gap-3 text-center">

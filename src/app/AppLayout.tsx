@@ -1,11 +1,12 @@
 import { Layers, LogOut } from "lucide-react";
+import { useState } from "react";
 import { NavLink, Outlet } from "react-router";
 import { Button } from "../components/Button";
 import { MockModeBanner } from "../components/MockModeBanner";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { ToastRegion } from "../components/ToastRegion";
 import { cn } from "../lib/cn";
-import { useAuthStore } from "../stores/authStore";
-import { useSelectionStore } from "../stores/selectionStore";
+import { SignOutDialog } from "./SignOutDialog";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
@@ -16,7 +17,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   );
 
 export function AppLayout() {
-  const signOut = useAuthStore((state) => state.signOut);
+  const [confirmingSignOut, setConfirmingSignOut] = useState(false);
 
   return (
     <div className="min-h-screen">
@@ -45,19 +46,18 @@ export function AppLayout() {
           </nav>
           <div className="ml-auto flex items-center gap-1">
             <ThemeToggle />
-            <Button
-              variant="ghost"
-              onClick={() => {
-                useSelectionStore.getState().clear();
-                signOut();
-              }}
-            >
+            <Button variant="ghost" onClick={() => setConfirmingSignOut(true)}>
               <LogOut className="size-4" aria-hidden="true" />
               Sign out
             </Button>
           </div>
         </div>
+        {/* Top-right, directly under the header so it never covers the header controls. */}
+        <div className="pointer-events-none absolute right-0 top-full z-10 flex w-full justify-end px-4 pt-3 sm:w-auto">
+          <ToastRegion />
+        </div>
       </header>
+      <SignOutDialog open={confirmingSignOut} onClose={() => setConfirmingSignOut(false)} />
       <main id="main" tabIndex={-1} className="mx-auto max-w-7xl px-4 py-8 outline-none">
         <Outlet />
       </main>
