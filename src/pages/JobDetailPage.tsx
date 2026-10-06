@@ -51,16 +51,14 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-3">
-      <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-        <Icon className="size-4" aria-hidden="true" />
-      </span>
-      <div className="flex flex-col gap-0.5">
-        <dt className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">
-          {label}
-        </dt>
-        <dd className="text-sm">{children}</dd>
-      </div>
+    <div className="flex flex-col gap-1.5">
+      <dt className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+          <Icon className="size-4" aria-hidden="true" />
+        </span>
+        {label}
+      </dt>
+      <dd className="pl-10 text-sm">{children}</dd>
     </div>
   );
 }

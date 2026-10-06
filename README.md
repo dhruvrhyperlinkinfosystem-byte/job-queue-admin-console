@@ -203,6 +203,22 @@ A 409 or 404 shows the server's message, then refreshes the affected view.
 - Usable at 375 px. Wide tables scroll inside their own container; the page never scrolls
   sideways (checked in a real browser).
 
+## Visual design
+
+Plain Tailwind utilities, no component library. A small set of tokens keeps the screens consistent:
+
+- **Surfaces:** one `.card` style (border, soft shadow) and one `.field` style for inputs,
+  defined in `src/index.css`; slate neutrals and a single indigo accent in both themes.
+- **Status colours** live in one place (`src/lib/statusStyles.ts`) and are always paired with an
+  icon and a word. The queue proportion bars are decorative; the counts carry the information.
+- **Queues:** totals strip across all queues, then one card per queue with a proportion bar.
+- **Jobs:** filter panel with status pills, a table with an attempts meter, and a floating
+  selection bar for bulk actions. **Detail:** header card, icon-labelled facts, error callout,
+  attempts table with outcome icons, and a code-style payload block.
+- **States:** icon-led empty and error cards, and a table-shaped skeleton so layout does not jump.
+- `prefers-reduced-motion` is honoured. Every colour pair was re-checked with axe in both themes
+  after the redesign, which caught and fixed a hover-contrast miss and invalid `<dl>` markup.
+
 ## Testing and quality results
 
 All checks pass on a fresh clone after `npm ci` (run on Node 22, see caveats below).

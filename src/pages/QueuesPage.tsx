@@ -47,21 +47,19 @@ function TotalsStrip({ queues }: { queues: QueueSummary[] }) {
         {COUNTED_STATUSES.map((status) => {
           const { icon: Icon } = STATUS_STYLES[status];
           return (
-            <div key={status} className="card flex items-center gap-3 p-4">
-              <span
-                className={cn(
-                  "flex size-10 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset",
-                  STATUS_STYLES[status].classes,
-                )}
-              >
-                <Icon className="size-5" aria-hidden="true" />
-              </span>
-              <div>
-                <dt className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                  {STATUS_LABELS[status]}
-                </dt>
-                <dd className="text-2xl font-semibold tabular-nums">{totals[status]}</dd>
-              </div>
+            <div key={status} className="card flex flex-col gap-2 p-4">
+              <dt className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
+                <span
+                  className={cn(
+                    "flex size-8 shrink-0 items-center justify-center rounded-lg ring-1 ring-inset",
+                    STATUS_STYLES[status].classes,
+                  )}
+                >
+                  <Icon className="size-4" aria-hidden="true" />
+                </span>
+                {STATUS_LABELS[status]}
+              </dt>
+              <dd className="text-3xl font-semibold tabular-nums">{totals[status]}</dd>
             </div>
           );
         })}

@@ -47,7 +47,10 @@ function SortHeader({
       <button
         type="button"
         onClick={() => onSort(field)}
-        className={cn("-mx-1 inline-flex items-center gap-1 rounded px-1 py-0.5", focusRing)}
+        className={cn(
+          "-mx-1 inline-flex items-center gap-1 rounded px-1 py-0.5 uppercase tracking-wide",
+          focusRing,
+        )}
       >
         {label}
         <Icon className="size-3.5" aria-hidden="true" />

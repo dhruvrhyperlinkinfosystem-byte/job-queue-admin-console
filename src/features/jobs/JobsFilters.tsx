@@ -123,7 +123,7 @@ export function JobsFilters({ state, onChange, onClear }: JobsFiltersProps) {
       </fieldset>
 
       {hasActiveFilters(state) && (
-        <Button variant="ghost" onClick={onClear}>
+        <Button variant="ghost" onClick={onClear} className="sm:ml-auto">
           <X className="size-4" aria-hidden="true" />
           Clear filters
         </Button>
