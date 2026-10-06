@@ -73,6 +73,10 @@ The mode is remembered for the browser tab (`sessionStorage`), because navigatin
 drops the query string. `?mock=normal` switches back. Auth is checked before failure injection,
 so the `expired` token still gets 401 in `errors` mode.
 
+Because the mode sticks to the tab, a banner under the header shows whenever it is not `normal`,
+with a "Switch back to normal" link, so a plain URL after `?mock=errors` is not mistaken for a
+broken app. Changing the mode refetches the data on screen.
+
 **Session state.** Retries and replays persist for the session: reload the list and a replayed job
 stays `pending`. MSW runs in the page, so state would be lost on reload; it is mirrored to
 `sessionStorage` (one tab = one session). Open a new tab or clear site data to reset to the seed.
@@ -207,8 +211,8 @@ All checks pass on a fresh clone after `npm ci` (run on Node 22, see caveats bel
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `tsc -b`, no `any`, no unexplained `@ts-ignore` | pass                                                                                                   |
 | ESLint (`--max-warnings 0`), Prettier           | pass                                                                                                   |
-| Vitest                                          | 92 tests across 10 files                                                                               |
-| Playwright                                      | 21 tests: replay flow, axe on every screen/state in both themes, keyboard-only flows                   |
+| Vitest                                          | 97 tests across 11 files                                                                               |
+| Playwright                                      | 24 tests: replay flow, axe on every screen/state in both themes, keyboard-only flows                   |
 | axe (critical + serious)                        | 0 violations on sign-in, queues, list, detail, bulk dialog, empty, error, not-found, in light and dark |
 | Lighthouse accessibility                        | 100 on list and detail, light and dark, desktop and mobile                                             |
 
@@ -224,6 +228,7 @@ What the tests cover (user-visible behaviour, against the real MSW handlers):
 - Failures: 500 with recovery, network error, errors mode, 401 sign-out and return, 429 waiting
   for `Retry-After` (and giving up after three).
 - Theme: system default, manual toggle, persistence, following system changes.
+- Mock mode banner, and the clipboard fallback when the async Clipboard API is unavailable.
 
 Two honest notes on the accessibility numbers: axe cannot check everything (it found the one real
 issue, a low-contrast placeholder, which is fixed), and I did not do a screen-reader pass.
