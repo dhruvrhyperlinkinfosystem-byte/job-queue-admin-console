@@ -2,17 +2,14 @@ import { Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../../api/endpoints";
 import { JOB_STATUSES, type JobStatus } from "../../api/types";
-import { Button, focusRing } from "../../components/Button";
+import { Button } from "../../components/Button";
 import { useApiQuery } from "../../hooks/useApiQuery";
 import { cn } from "../../lib/cn";
 import { STATUS_LABELS } from "../../lib/status";
+import { STATUS_STYLES } from "../../lib/statusStyles";
 import { hasActiveFilters, type JobListState } from "./listParams";
 
 const SEARCH_DEBOUNCE_MS = 300;
-const fieldClass = cn(
-  "min-h-10 rounded-md border border-slate-400 bg-white px-3 text-sm dark:border-slate-500 dark:bg-slate-900",
-  focusRing,
-);
 
 interface JobsFiltersProps {
   state: JobListState;
@@ -53,7 +50,7 @@ function SearchField({ value, onCommit }: { value: string; onCommit: (value: str
           onChange={(event) => setText(event.target.value)}
           placeholder="job_01J…"
           autoComplete="off"
-          className={cn(fieldClass, "w-full pl-9 sm:w-64")}
+          className="field w-full pl-9 sm:w-72"
         />
       </div>
     </div>
@@ -73,7 +70,7 @@ export function JobsFilters({ state, onChange, onClear }: JobsFiltersProps) {
   }
 
   return (
-    <section aria-label="Filters" className="flex flex-wrap items-end gap-x-6 gap-y-4">
+    <section aria-label="Filters" className="card flex flex-wrap items-end gap-x-6 gap-y-4 p-4">
       <SearchField value={state.q} onCommit={(q) => onChange({ q }, { replace: true })} />
 
       <div className="flex flex-col gap-1.5">
@@ -84,7 +81,7 @@ export function JobsFilters({ state, onChange, onClear }: JobsFiltersProps) {
           id="job-queue"
           value={state.queue}
           onChange={(event) => onChange({ queue: event.target.value })}
-          className={fieldClass}
+          className="field pr-8"
         >
           <option value="">All queues</option>
           {queueNames.map((name) => (
@@ -100,22 +97,24 @@ export function JobsFilters({ state, onChange, onClear }: JobsFiltersProps) {
         <div className="flex flex-wrap gap-2">
           {JOB_STATUSES.map((status) => {
             const checked = state.statuses.includes(status);
+            const { icon: Icon } = STATUS_STYLES[status];
             return (
               <label
                 key={status}
                 className={cn(
-                  "flex min-h-10 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-indigo-600 dark:has-[:focus-visible]:outline-indigo-300",
+                  "flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border px-3 text-sm font-medium transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-indigo-600 dark:has-[:focus-visible]:outline-indigo-300",
                   checked
-                    ? "border-indigo-700 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-950"
-                    : "border-slate-300 dark:border-slate-600",
+                    ? "border-indigo-600 bg-indigo-50 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-950 dark:text-indigo-100"
+                    : "border-slate-300 bg-white text-slate-700 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600",
                 )}
               >
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleStatus(status)}
-                  className="size-4 accent-indigo-700"
+                  className="size-4 accent-indigo-600"
                 />
+                <Icon className="size-3.5" aria-hidden="true" />
                 {STATUS_LABELS[status]}
               </label>
             );

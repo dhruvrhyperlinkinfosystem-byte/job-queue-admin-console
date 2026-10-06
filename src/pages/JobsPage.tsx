@@ -6,6 +6,7 @@ import { MAX_BULK_REPLAY, type BulkReplayResponse } from "../api/types";
 import { Button } from "../components/Button";
 import { EmptyState } from "../components/EmptyState";
 import { ErrorState } from "../components/ErrorState";
+import { PageHeader } from "../components/PageHeader";
 import { LoadingRegion, TableSkeleton } from "../components/Skeleton";
 import { BulkReplayDialog } from "../features/jobs/BulkReplayDialog";
 import { JobsFilters } from "../features/jobs/JobsFilters";
@@ -134,7 +135,7 @@ export function JobsPage() {
           <div
             role="region"
             aria-label="Bulk actions"
-            className="flex flex-wrap items-center gap-3 rounded-md bg-indigo-50 px-3 py-2 dark:bg-indigo-950"
+            className="sticky bottom-4 z-20 flex flex-wrap items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2.5 shadow-float dark:border-indigo-800 dark:bg-indigo-950"
           >
             <span className="text-sm font-medium" aria-live="polite">
               {selectedIds.length} selected
@@ -178,8 +179,11 @@ export function JobsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-semibold">Jobs</h1>
+    <div className="flex flex-col gap-5">
+      <PageHeader
+        title="Jobs"
+        description="Filter, sort and act on jobs. The view is in the URL, so you can share it."
+      />
       <JobsFilters state={state} onChange={changeView} onClear={clearFilters} />
       {content}
       <BulkReplayDialog

@@ -21,7 +21,7 @@ interface JobsTableProps {
   returnSearch: string;
 }
 
-const cell = "px-3 py-2 text-left align-middle";
+const cell = "px-4 py-3 text-left align-middle";
 
 function SortHeader({
   field,
@@ -74,12 +74,12 @@ export function JobsTable({
   const sortProps = { sort, order, onSort };
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800">
+    <div className="card overflow-x-auto">
       <table className="w-full min-w-[56rem] border-collapse text-sm">
         <caption className="sr-only">
           Jobs. Select dead jobs with the checkboxes to replay them together.
         </caption>
-        <thead className="bg-slate-50 dark:bg-slate-900">
+        <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
           <tr>
             <th scope="col" className={cn(cell, "w-10")}>
               <input
@@ -91,7 +91,7 @@ export function JobsTable({
                   if (el) el.indeterminate = selectedDead > 0 && !allSelected;
                 }}
                 onChange={(event) => onToggleAll(event.target.checked)}
-                className="size-4 accent-indigo-700"
+                className="size-4 accent-indigo-600"
               />
             </th>
             <th scope="col" className={cn(cell, "font-medium")}>
@@ -111,9 +111,12 @@ export function JobsTable({
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
           {jobs.map((job) => (
-            <tr key={job.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50">
+            <tr
+              key={job.id}
+              className="transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40"
+            >
               <td className={cell}>
                 {job.status === "dead" ? (
                   <input
@@ -121,7 +124,7 @@ export function JobsTable({
                     aria-label={`Select ${job.id}`}
                     checked={selectedIds.has(job.id)}
                     onChange={() => onToggleRow(job.id)}
-                    className="size-4 accent-indigo-700"
+                    className="size-4 accent-indigo-600"
                   />
                 ) : null}
               </td>
@@ -130,24 +133,41 @@ export function JobsTable({
                   to={`/jobs/${encodeURIComponent(job.id)}`}
                   state={{ returnSearch }}
                   className={cn(
-                    "rounded font-mono text-indigo-700 underline dark:text-indigo-300",
+                    "rounded font-mono text-[13px] font-medium text-indigo-700 underline-offset-2 hover:underline dark:text-indigo-300",
                     focusRing,
                   )}
                 >
                   {job.id}
                 </Link>
               </td>
-              <td className={cell}>{job.queue}</td>
+              <td className={cell}>
+                <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                  {job.queue}
+                </span>
+              </td>
               <td className={cell}>
                 <StatusBadge status={job.status} />
               </td>
-              <td className={cn(cell, "tabular-nums")}>
-                {job.attempts} / {job.max_attempts}
+              <td className={cell}>
+                <div className="flex items-center gap-2">
+                  <span className="tabular-nums">
+                    {job.attempts} / {job.max_attempts}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="h-1.5 w-12 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700"
+                  >
+                    <span
+                      className="block h-full rounded-full bg-slate-500 dark:bg-slate-400"
+                      style={{ width: `${(job.attempts / job.max_attempts) * 100}%` }}
+                    />
+                  </span>
+                </div>
               </td>
-              <td className={cn(cell, "whitespace-nowrap")}>
+              <td className={cn(cell, "whitespace-nowrap text-slate-700 dark:text-slate-300")}>
                 <time dateTime={job.created_at}>{formatDateTime(job.created_at)}</time>
               </td>
-              <td className={cn(cell, "whitespace-nowrap")}>
+              <td className={cn(cell, "whitespace-nowrap text-slate-700 dark:text-slate-300")}>
                 <time dateTime={job.updated_at}>{formatDateTime(job.updated_at)}</time>
               </td>
               <td className={cell}>

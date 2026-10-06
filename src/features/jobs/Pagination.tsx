@@ -28,7 +28,7 @@ export function Pagination({
           id="page-size"
           value={pageSize}
           onChange={(event) => onPageSizeChange(Number(event.target.value))}
-          className="min-h-10 rounded-md border border-slate-400 bg-white px-2 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-500 dark:bg-slate-900 dark:focus-visible:outline-indigo-300"
+          className="field px-2"
         >
           {PAGE_SIZE_OPTIONS.map((size) => (
             <option key={size} value={size}>
