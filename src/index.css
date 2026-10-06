@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  /* Tailwind's default placeholder grey (#9ca3af) fails WCAG AA contrast on white. */
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-slate-600 opacity-100 dark:text-slate-400;
+  }
+
   body {
     @apply bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100;
   }
