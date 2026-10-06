@@ -1,5 +1,6 @@
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
+import { copyText } from "../lib/clipboard";
 import { useToastStore } from "../stores/toastStore";
 import { Button } from "./Button";
 
@@ -13,12 +14,8 @@ export function CopyButton({ text, label }: { text: string; label: string }) {
   }, [copied]);
 
   async function copy() {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-    } catch {
-      useToastStore.getState().push("error", "Could not copy to the clipboard.");
-    }
+    if (await copyText(text)) setCopied(true);
+    else useToastStore.getState().push("error", "Could not copy to the clipboard.");
   }
 
   return (

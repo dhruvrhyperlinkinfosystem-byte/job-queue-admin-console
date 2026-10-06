@@ -126,3 +126,35 @@ describe("job detail", () => {
     expect(screen.getByRole("heading", { name: "Payload" })).toBeInTheDocument();
   });
 });
+
+describe("copy payload fallback", () => {
+  it("still copies when the async Clipboard API is unavailable", async () => {
+    const user = userEvent.setup();
+    const job = dead();
+    renderAt(`/jobs/${job.id}`);
+    await screen.findByRole("heading", { level: 1, name: job.id });
+
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+    let copied = "";
+    document.execCommand = (command: string) => {
+      copied = (document.querySelector("textarea") as HTMLTextAreaElement).value;
+      return command === "copy";
+    };
+
+    await user.click(screen.getByRole("button", { name: "Copy payload" }));
+    expect(await screen.findByRole("button", { name: /copied/i })).toBeInTheDocument();
+    expect(copied).toBe(JSON.stringify(job.payload, null, 2));
+  });
+
+  it("says so when copying is impossible", async () => {
+    const user = userEvent.setup();
+    const job = dead();
+    renderAt(`/jobs/${job.id}`);
+    await screen.findByRole("heading", { level: 1, name: job.id });
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+    document.execCommand = () => false;
+
+    await user.click(screen.getByRole("button", { name: "Copy payload" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(/could not copy/i);
+  });
+});
