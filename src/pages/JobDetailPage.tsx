@@ -1,4 +1,15 @@
-import { ArrowLeft, History, SearchX } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarClock,
+  CalendarPlus,
+  CircleAlert,
+  History,
+  Layers,
+  RefreshCw,
+  Repeat,
+  SearchX,
+  type LucideIcon,
+} from "lucide-react";
 import { useCallback, useState } from "react";
 import { Link, useLocation, useParams } from "react-router";
 import { api } from "../api/endpoints";
@@ -30,13 +41,26 @@ function useReloadCounter() {
   return [count, bump] as const;
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  icon: Icon,
+  children,
+}: {
+  label: string;
+  icon: LucideIcon;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="flex flex-col gap-0.5">
-      <dt className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">
-        {label}
-      </dt>
-      <dd className="text-sm">{children}</dd>
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+        <Icon className="size-4" aria-hidden="true" />
+      </span>
+      <div className="flex flex-col gap-0.5">
+        <dt className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">
+          {label}
+        </dt>
+        <dd className="text-sm">{children}</dd>
+      </div>
     </div>
   );
 }
@@ -47,22 +71,23 @@ function Time({ iso }: { iso: string | null }) {
 
 function JobSummary({ job }: { job: Job }) {
   return (
-    <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-      <Field label="Status">
-        <StatusBadge status={job.status} />
+    <dl className="card grid grid-cols-1 gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3">
+      <Field label="Queue" icon={Layers}>
+        <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+          {job.queue}
+        </span>
       </Field>
-      <Field label="Queue">{job.queue}</Field>
-      <Field label="Attempts">
+      <Field label="Attempts" icon={Repeat}>
         {job.attempts} of {job.max_attempts}
       </Field>
-      <Field label="Created">
+      <Field label="Next attempt" icon={RefreshCw}>
+        <Time iso={job.next_attempt_at} />
+      </Field>
+      <Field label="Created" icon={CalendarPlus}>
         <Time iso={job.created_at} />
       </Field>
-      <Field label="Updated">
+      <Field label="Updated" icon={CalendarClock}>
         <Time iso={job.updated_at} />
-      </Field>
-      <Field label="Next attempt">
-        <Time iso={job.next_attempt_at} />
       </Field>
     </dl>
   );
@@ -129,7 +154,7 @@ export function JobDetailPage() {
     <Link
       to={backTo}
       className={cn(
-        "inline-flex w-fit items-center gap-1 rounded text-sm font-medium text-indigo-700 underline dark:text-indigo-300",
+        "inline-flex w-fit items-center gap-1 rounded text-sm font-medium text-indigo-700 underline-offset-2 hover:underline dark:text-indigo-300",
         focusRing,
       )}
     >
@@ -171,19 +196,33 @@ export function JobDetailPage() {
     const payload = JSON.stringify(data.payload, null, 2);
     content = (
       <div className="flex flex-col gap-6" aria-busy={job.isLoading}>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="break-all font-mono text-xl font-semibold">{data.id}</h1>
+        <div className="card flex flex-wrap items-start justify-between gap-4 p-5">
+          <div className="flex min-w-0 flex-col gap-2">
+            <h1 className="break-all font-mono text-xl font-semibold">{data.id}</h1>
+            <div>
+              <StatusBadge status={data.status} className="px-3 py-1 text-sm" />
+            </div>
+          </div>
           <ActionButton job={data} busy={busyIds.has(data.id)} onRun={run} />
         </div>
         <JobSummary job={data} />
         {data.last_error && (
-          <section aria-labelledby="last-error-heading">
-            <h2 id="last-error-heading" className="mb-2 text-lg font-semibold">
-              Last error
-            </h2>
-            <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm dark:border-red-900 dark:bg-red-950/40">
-              {data.last_error}
-            </p>
+          <section
+            aria-labelledby="last-error-heading"
+            className="flex gap-3 rounded-xl border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40"
+          >
+            <CircleAlert
+              className="mt-0.5 size-5 shrink-0 text-red-700 dark:text-red-300"
+              aria-hidden="true"
+            />
+            <div className="min-w-0">
+              <h2 id="last-error-heading" className="text-sm font-semibold">
+                Last error
+              </h2>
+              <p className="mt-1 break-words text-sm text-slate-800 dark:text-slate-200">
+                {data.last_error}
+              </p>
+            </div>
           </section>
         )}
         <AttemptsSection jobId={data.id} reloadKey={attemptsVersion} />
@@ -198,7 +237,7 @@ export function JobDetailPage() {
             tabIndex={0}
             aria-labelledby="payload-heading"
             className={cn(
-              "overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-800 dark:bg-slate-900",
+              "overflow-x-auto rounded-xl border border-slate-800 bg-slate-950 p-4 text-sm leading-relaxed text-slate-100 shadow-card",
               focusRing,
             )}
           >
@@ -210,7 +249,7 @@ export function JobDetailPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {back}
       {content}
     </div>

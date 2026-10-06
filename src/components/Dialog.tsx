@@ -66,7 +66,7 @@ function DialogContent({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-40 flex items-end justify-center bg-slate-950/60 p-4 sm:items-center"
+      className="fixed inset-0 z-40 flex items-end justify-center bg-slate-950/60 p-4 backdrop-blur-sm sm:items-center"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget && !disableClose) onClose();
       }}
@@ -78,7 +78,7 @@ function DialogContent({
         aria-labelledby={titleId}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
-        className="max-h-full w-full max-w-lg overflow-y-auto rounded-lg bg-white p-6 shadow-xl outline-none dark:bg-slate-900"
+        className="max-h-full w-full max-w-lg overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-float outline-none dark:border-slate-800 dark:bg-slate-900"
       >
         <h2 id={titleId} className="text-lg font-semibold">
           {title}

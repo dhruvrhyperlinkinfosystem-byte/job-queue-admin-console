@@ -6,9 +6,14 @@ import { focusRing } from "./Button";
 const ICONS = { success: CircleCheck, error: CircleAlert, info: Info } as const;
 const LABELS: Record<ToastKind, string> = { success: "Success", error: "Error", info: "Notice" };
 const STYLES: Record<ToastKind, string> = {
-  success: "border-green-300 dark:border-green-800",
-  error: "border-red-300 dark:border-red-800",
-  info: "border-slate-300 dark:border-slate-700",
+  success: "border-l-green-600 dark:border-l-green-400",
+  error: "border-l-red-600 dark:border-l-red-400",
+  info: "border-l-slate-500 dark:border-l-slate-400",
+};
+const ICON_TONES: Record<ToastKind, string> = {
+  success: "text-green-700 dark:text-green-300",
+  error: "text-red-700 dark:text-red-300",
+  info: "text-slate-700 dark:text-slate-300",
 };
 
 export function ToastRegion() {
@@ -27,11 +32,14 @@ export function ToastRegion() {
             key={toast.id}
             role={toast.kind === "error" ? "alert" : "status"}
             className={cn(
-              "pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-lg border bg-white p-3 text-sm shadow-lg dark:bg-slate-900",
+              "pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl border border-l-4 border-slate-200 bg-white p-3.5 text-sm shadow-float dark:border-slate-800 dark:bg-slate-900",
               STYLES[toast.kind],
             )}
           >
-            <Icon className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+            <Icon
+              className={cn("mt-0.5 size-4 shrink-0", ICON_TONES[toast.kind])}
+              aria-hidden="true"
+            />
             <p className="flex-1">
               <span className="sr-only">{LABELS[toast.kind]}: </span>
               {toast.message}
