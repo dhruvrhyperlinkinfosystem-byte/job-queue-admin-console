@@ -145,5 +145,14 @@ test("a whole session works with the keyboard only: queues, filters, detail, ret
   await expect(page).toHaveURL(/\/jobs\?status=failed/);
   await page.getByRole("button", { name: "Sign out" }).focus();
   await page.keyboard.press("Enter");
+  const dialog = page.getByRole("dialog", { name: "Sign out?" });
+  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await page.keyboard.press("Escape"); // backing out keeps the session
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Sign out" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Enter"); // confirm
   await expect(page.getByLabel("Access token")).toBeVisible();
+  await expect(page.getByText("You have been signed out.")).toBeVisible();
 });

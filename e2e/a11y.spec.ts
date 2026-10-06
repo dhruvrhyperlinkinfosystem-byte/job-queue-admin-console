@@ -76,6 +76,28 @@ for (const theme of ["light", "dark"] as const satisfies Theme[]) {
         expect(await seriousViolations(page)).toEqual([]);
       });
 
+      test("sign-out confirmation dialog", async ({ page }) => {
+        await page.goto("/");
+        await expect(page.getByRole("heading", { name: "Queues" })).toBeVisible();
+        await page.getByRole("button", { name: "Sign out" }).click();
+        await expect(page.getByRole("dialog", { name: "Sign out?" })).toBeVisible();
+        expect(await seriousViolations(page)).toEqual([]);
+      });
+
+      test("toasts after an action and after signing out", async ({ page }) => {
+        await page.goto("/jobs?status=failed");
+        await page
+          .getByRole("button", { name: /^Retry job_/ })
+          .first()
+          .click();
+        await expect(page.getByText(/is pending again/)).toBeVisible();
+        expect(await seriousViolations(page)).toEqual([]);
+        await page.getByRole("button", { name: "Sign out" }).click();
+        await page.getByRole("dialog").getByRole("button", { name: "Sign out" }).click();
+        await expect(page.getByText("You have been signed out.")).toBeVisible();
+        expect(await seriousViolations(page)).toEqual([]);
+      });
+
       test("mock mode banner", async ({ page }) => {
         await page.goto("/jobs?mock=flaky");
         await expect(page.getByText(/Mock mode/)).toBeVisible();

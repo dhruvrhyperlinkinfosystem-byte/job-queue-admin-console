@@ -206,6 +206,9 @@ async function main() {
       "Expired token: any call returns 401, user is signed out with a message",
       async () => {
         await page.getByRole("button", { name: "Sign out" }).click();
+        await page.getByRole("dialog").getByRole("button", { name: "Sign out" }).click();
+        await page.getByText("You have been signed out.").waitFor();
+        await pause(page, 1500);
         await signIn(page, "expired");
         await page.getByRole("alert").waitFor();
       },

@@ -193,6 +193,11 @@ A 409 or 404 shows the server's message, then refreshes the affected view.
   and retries the request once; the worker is also re-checked when the tab regains focus or
   visibility. Tested in unit tests and in Playwright by stopping the worker through the DevTools
   protocol.
+- **Feedback and confirmation**: toasts appear top-right, just under the header so they never cover
+  the header controls. They confirm sign-in, sign-out, retry, replay, bulk replay and payload copy,
+  and report failures. Signing out asks for confirmation first (an accessible dialog: focus trap,
+  Escape to cancel, focus returns to the button). A session that expires on its own shows the
+  sign-in message instead, not the "signed out" toast.
 - **Empty states**: no queues, no jobs at all, no matches for the filters (with "Clear filters"),
   and a page past the end (with a way back).
 
@@ -233,8 +238,8 @@ All checks pass on a fresh clone after `npm ci` (run on Node 22, see caveats bel
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `tsc -b`, no `any`, no unexplained `@ts-ignore` | pass                                                                                                   |
 | ESLint (`--max-warnings 0`), Prettier           | pass                                                                                                   |
-| Vitest                                          | 106 tests across 12 files                                                                              |
-| Playwright                                      | 26 tests: replay flow, axe on every screen/state in both themes, keyboard-only flows                   |
+| Vitest                                          | 112 tests across 12 files                                                                              |
+| Playwright                                      | 30 tests: replay flow, axe on every screen/state in both themes, keyboard-only flows                   |
 | axe (critical + serious)                        | 0 violations on sign-in, queues, list, detail, bulk dialog, empty, error, not-found, in light and dark |
 | Lighthouse accessibility                        | 100 on list and detail, light and dark, desktop and mobile                                             |
 
