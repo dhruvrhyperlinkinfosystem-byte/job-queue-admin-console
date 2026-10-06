@@ -3,13 +3,50 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply tracking-tight;
+  }
+
   /* Tailwind's default placeholder grey (#9ca3af) fails WCAG AA contrast on white. */
   input::placeholder,
   textarea::placeholder {
     @apply text-slate-600 opacity-100 dark:text-slate-400;
   }
 
-  body {
-    @apply bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  ::selection {
+    @apply bg-indigo-200 text-slate-950 dark:bg-indigo-800 dark:text-white;
+  }
+}
+
+@layer components {
+  /* The one surface style used for cards, tables and panels. */
+  .card {
+    @apply rounded-xl border border-slate-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900;
+  }
+
+  .field {
+    @apply min-h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm shadow-sm transition-colors hover:border-slate-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600 dark:focus-visible:outline-indigo-300;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
