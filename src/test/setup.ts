@@ -31,6 +31,7 @@ afterEach(() => {
   useThemeStore.setState({ theme: "system" });
   useSelectionStore.getState().clear();
   useToastStore.setState({ toasts: [] });
+  Reflect.deleteProperty(window, "matchMedia");
   window.history.replaceState(null, "", "/");
 });
 
