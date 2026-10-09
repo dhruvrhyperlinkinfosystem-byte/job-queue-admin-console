@@ -3,6 +3,7 @@
 A React admin console for a fictional job-queue service, built against a mocked API (MSW).
 Four screens: sign-in, queues overview, jobs list and job detail, with retry, replay and bulk replay.
 
+- **Engineer:** Dhruv Raval (dhruvraval@hyperlinkinfosystem.net.in), who will join the live walkthrough.
 - **Stack:** TypeScript 6 (strict), React 19, Vite 8, React Router 7 (declarative), Zustand 5,
   Tailwind 3.4, MSW, Vitest + React Testing Library, Playwright.
 - **No backend.** The API is served by MSW inside the page, including in the production build.
